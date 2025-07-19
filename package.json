@@ -4,7 +4,9 @@
   "description": "",
   "main": "main.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start:build": "tsc -w --project tsconfig.json && npx -p tsconfig json",
+    "build:live": "npx tsx src/main.ts",
+    "start": "npm run build:live"
   },
   "repository": {
     "type": "git",
