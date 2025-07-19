@@ -6,6 +6,8 @@ const UserSchema = new mongoose.Schema({
     name: { type: String, required: true },
     password: { type: String, required: true },
 
+    keyword: [{ type: String }],
+
     avatar: { type: Types.ObjectId, ref: 'Avatar' },
     reviews: [{ type: Types.ObjectId, ref: 'Review' }],
     trades: [{ type: Types.ObjectId, ref: 'Trade' }],
