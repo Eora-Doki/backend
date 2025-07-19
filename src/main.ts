@@ -7,7 +7,8 @@ import cors from '@fastify/cors'
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
 import { swaggerConfig, swaggerUiConfig } from "./config/swagger";
-import { connectDB } from "../../map_study/src/db";
+import { connectDB } from "./db";
+import routes from "./routes";
 
 const fastify = Fastify({
     logger: true,
@@ -25,6 +26,7 @@ fastify.register(cors, {
 
 fastify.register(fastifySwagger, swaggerConfig)
 fastify.register(fastifySwaggerUi, swaggerUiConfig)
+fastify.register(routes)
 
 const start = async () => {
     try {
