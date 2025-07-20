@@ -31,7 +31,7 @@ fastify.register(routes)
 const start = async () => {
     try {
         await connectDB();
-        await fastify.listen({port: 8083})
+        await fastify.listen({port: 8083, host: '0.0.0.0'})
         console.log("Server Start!")
     }
     catch(error) {
