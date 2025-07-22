@@ -59,8 +59,6 @@ const loginSchema = {
             id: Type.String(),
             email: Type.String(),
             name: Type.String(),
-            character: Type.String(),
-
             Authorization: Type.String(),
         })
     }
