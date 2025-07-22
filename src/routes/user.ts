@@ -45,6 +45,7 @@ const userRoute = async (fastify: FastifyInstance) => {
                     rep.status(200).send({
                         id: userLogin.id,
                         email: userLogin.email,
+                        name: userLogin.name,
                         Authorization: userLogin.access_token
                     })
                 }

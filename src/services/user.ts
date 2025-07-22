@@ -58,6 +58,7 @@ function userService() {
             return {
                 id: verify._id,
                 email: email,
+                name: verify.name,
                 access_token,
                 refresh_token
             }
