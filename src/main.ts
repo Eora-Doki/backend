@@ -18,6 +18,8 @@ const fastify = Fastify({
     // }
 }).withTypeProvider<TypeBoxTypeProvider>()
 
+fastify.register(fastifyCookie);
+
 fastify.register(cors, {
     origin: true, 
     credentials: true, 
@@ -26,6 +28,7 @@ fastify.register(cors, {
 
 fastify.register(fastifySwagger, swaggerConfig)
 fastify.register(fastifySwaggerUi, swaggerUiConfig)
+
 fastify.register(routes)
 
 const start = async () => {

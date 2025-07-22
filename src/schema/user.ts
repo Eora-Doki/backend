@@ -17,12 +17,16 @@ const UserSchema = new mongoose.Schema({
 const TokenSchema = new mongoose.Schema({
   userId: { type: mongoose.Types.ObjectId, ref: 'User', required: true },
   refreshToken: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now },
-  expiresAt: { type: Date, required: true }
+//   createdAt: { type: Date, default: Date.now },
+//   expiresAt: { type: Date, required: true }
 });
 
 const UserModel = mongoose.model("User", UserSchema);
 const TokenModel = mongoose.model("Token", TokenSchema);
+
+const headers = Type.Object({
+    Authorization: Type.String()
+})
 
 const registerBodySchema = Type.Object({
     email: Type.String(),
@@ -66,6 +70,7 @@ export {
     UserModel,
     TokenModel,
 
+    headers,
     registerBodySchema,
     loginBodySchema,
 
