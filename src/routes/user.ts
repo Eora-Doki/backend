@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { registerSchema } from "../schema/user";
-import { TUserRegisterBody } from "../schema/types";
+import { registerSchema, loginSchema } from "../schema/user";
+import { TUserRegisterBody, TUserLoginBody } from "../schema/types";
 import userService from "../services/user.ts"
 
 const userRoute = async (fastify: FastifyInstance) => {
@@ -21,6 +21,38 @@ const userRoute = async (fastify: FastifyInstance) => {
                     throw err
                 }
         }
+    })
+    fastify.route({
+        method: 'POST',
+        url: '/login',
+        schema: loginSchema,
+        handler: async (
+            req: FastifyRequest<{Body: TUserLoginBody}>,
+            rep: FastifyReply ) => {
+                const { email, password } = req.body
+
+                try {
+                    const userLogin = await userService.login(email, password)
+
+                    rep.setCookie('refresh_token', userLogin.refresh_token, {
+                        sameSite: 'lax',
+                        secure: false,
+                        path: '/',
+                        httpOnly: true,
+                        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
+                    });
+
+                    rep.status(200).send({
+                        id: userLogin.id,
+                        email: userLogin.email,
+                        Authorization: userLogin.access_token
+                    })
+                }
+
+                catch(err) {
+                    throw err
+                }
+            }
     })
 }
 

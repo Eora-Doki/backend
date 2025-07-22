@@ -18,6 +18,8 @@ const fastify = Fastify({
     // }
 }).withTypeProvider<TypeBoxTypeProvider>()
 
+fastify.register(fastifyCookie);
+
 fastify.register(cors, {
     origin: true, 
     credentials: true, 
@@ -26,12 +28,13 @@ fastify.register(cors, {
 
 fastify.register(fastifySwagger, swaggerConfig)
 fastify.register(fastifySwaggerUi, swaggerUiConfig)
+
 fastify.register(routes)
 
 const start = async () => {
     try {
         await connectDB();
-        await fastify.listen({port: 8083})
+        await fastify.listen({port: 8083, host: '0.0.0.0'})
         console.log("Server Start!")
     }
     catch(error) {
