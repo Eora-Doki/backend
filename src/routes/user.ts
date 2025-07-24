@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { registerSchema, loginSchema, resetPasswordSchema } from "../schema/user";
+import { registerSchema, loginSchema, resetPasswordSchema, logoutSchema } from "../schema/user";
 import { TUserRegisterBody, TUserLoginBody, TUserResetPasswordBody } from "../schema/types";
 import fastifyCookie from '@fastify/cookie'
 import userService from "../services/user.ts"
@@ -61,6 +61,7 @@ const userRoute = async (fastify: FastifyInstance) => {
     fastify.route({
         method: 'DELETE',
         url: '/logout',
+        schema: logoutSchema,
         handler: async (
             req: FastifyRequest,
             rep: FastifyReply ) => {
@@ -70,9 +71,9 @@ const userRoute = async (fastify: FastifyInstance) => {
                 }
                 
                 try {
-                    await userService.logout(refresh_token)
+                    const userLogout = await userService.logout(refresh_token)
                     rep.clearCookie('refresh_token', {path: '/'})
-                    rep.status(200).send({ message: "success: 로그아웃 성공" })
+                    rep.status(200).send(userLogout)
                 }
                 catch(err) {
                     throw err

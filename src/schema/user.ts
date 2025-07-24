@@ -64,6 +64,14 @@ const loginSchema = {
     }
 }
 
+const logoutSchema = {
+    response: {
+        200: Type.Object({
+            message: Type.String()
+        })
+    }
+}
+
 const resetPasswordBodySchema = Type.Object({
     email: Type.String(),
     password: Type.String()
@@ -90,4 +98,5 @@ export {
     registerSchema,
     loginSchema,
     resetPasswordSchema,
+    logoutSchema,
 }

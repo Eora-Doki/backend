@@ -73,7 +73,7 @@ function userService() {
             const userLogout = await TokenModel.deleteMany({
                 refreshToken: refresh_token
             })
-            return userLogout
+            return { message: "로그아웃이 완료되었습니다." }
         }
         catch(err) {
             throw err
