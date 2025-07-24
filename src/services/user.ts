@@ -79,11 +79,28 @@ function userService() {
             throw err
         }
     }
+    const resetPassword = async (email: string, password: string) => {
+        try {
+            const pwd = await passwordEcrypt(password)
+
+            const resetPassword = await UserModel.updateOne(
+                { email },
+                { $set: { password: pwd } }
+            )
+            if (!resetPassword) throw new Error('해당 이메일은 가진 사용자가 존재하지 않습니다.');
+
+            return { message: '비밀번호 변경이 완료되었습니다.' }
+        }
+        catch(err) {
+            throw err
+        }
+    }
 
     return {
         register,
         login,
         logout,
+        resetPassword,
     }
 }
 export default userService()
