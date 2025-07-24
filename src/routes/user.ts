@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { registerSchema, loginSchema } from "../schema/user";
-import { TUserRegisterBody, TUserLoginBody } from "../schema/types";
+import { registerSchema, loginSchema, resetPasswordSchema } from "../schema/user";
+import { TUserRegisterBody, TUserLoginBody, TUserResetPasswordBody } from "../schema/types";
 import fastifyCookie from '@fastify/cookie'
 import userService from "../services/user.ts"
 
@@ -78,6 +78,25 @@ const userRoute = async (fastify: FastifyInstance) => {
                     throw err
                 }
             }
+    })
+    fastify.route({
+        method: 'PUT',
+        url: '/reset_password',
+        schema: resetPasswordSchema,
+        handler: async (
+            req: FastifyRequest<{Body: TUserResetPasswordBody}>,
+            rep: FastifyReply ) => {
+                const { email, password } = req.body
+
+                try {
+                    const resetPassword = await userService.resetPassword(email, password)
+                    rep.status(200).send(resetPassword)
+                }
+                catch(err) {
+                    throw err
+                }
+
+        }
     })
 }
 
