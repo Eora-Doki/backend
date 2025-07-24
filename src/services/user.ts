@@ -68,10 +68,22 @@ function userService() {
             throw err
         }
     }
+    const logout = async (refresh_token: string) => {
+        try {
+            const userLogout = await TokenModel.deleteMany({
+                refreshToken: refresh_token
+            })
+            return userLogout
+        }
+        catch(err) {
+            throw err
+        }
+    }
 
     return {
         register,
         login,
+        logout,
     }
 }
 export default userService()
