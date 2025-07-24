@@ -1,6 +1,7 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { registerSchema, loginSchema } from "../schema/user";
 import { TUserRegisterBody, TUserLoginBody } from "../schema/types";
+import fastifyCookie from '@fastify/cookie'
 import userService from "../services/user.ts"
 
 const userRoute = async (fastify: FastifyInstance) => {
@@ -15,7 +16,9 @@ const userRoute = async (fastify: FastifyInstance) => {
 
                 try {
                     const userRegister = await userService.register(email, name, password, character)
-                    return userRegister
+                    rep.status(201).send(
+                        userRegister
+                    ) 
                 }
                 catch(err) {
                     throw err
