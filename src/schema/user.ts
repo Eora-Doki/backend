@@ -55,7 +55,7 @@ const loginBodySchema = Type.Object({
 const loginSchema = {
     body: loginBodySchema,
     response: {
-        201: Type.Object({
+        200: Type.Object({
             id: Type.String(),
             email: Type.String(),
             name: Type.String(),
