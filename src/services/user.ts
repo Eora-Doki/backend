@@ -17,6 +17,7 @@ function userService() {
             })
 
             const userInfo = {
+                id: userRegister._id.toString(),
                 email: email,
                 name: name,
                 character: character,
