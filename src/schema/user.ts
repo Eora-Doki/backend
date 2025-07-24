@@ -64,6 +64,20 @@ const loginSchema = {
     }
 }
 
+const resetPasswordBodySchema = Type.Object({
+    email: Type.String(),
+    password: Type.String()
+})
+
+const resetPasswordSchema = {
+    body: resetPasswordBodySchema,
+    response: {
+        200: Type.Object({
+            message: Type.String()
+        })
+    }
+}
+
 export {
     UserModel,
     TokenModel,
@@ -71,7 +85,9 @@ export {
     headers,
     registerBodySchema,
     loginBodySchema,
+    resetPasswordBodySchema,
 
     registerSchema,
     loginSchema,
+    resetPasswordSchema,
 }
