@@ -58,6 +58,27 @@ const userRoute = async (fastify: FastifyInstance) => {
                 }
             }
     })
+    fastify.route({
+        method: 'DELETE',
+        url: '/logout',
+        handler: async (
+            req: FastifyRequest,
+            rep: FastifyReply ) => {
+                const refresh_token = req.cookies.refresh_token
+                if (!refresh_token) {
+                    return rep.status(401).send({ message: "refresh token이 존재하지 않습니다." });
+                }
+                
+                try {
+                    await userService.logout(refresh_token)
+                    rep.clearCookie('refresh_token', {path: '/'})
+                    rep.status(200).send({ message: "success: 로그아웃 성공" })
+                }
+                catch(err) {
+                    throw err
+                }
+            }
+    })
 }
 
 export default userRoute
