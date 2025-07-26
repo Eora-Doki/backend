@@ -32,8 +32,8 @@ function userService() {
     const login = async (email: string, password: string) => {
         try {
             const verify = await UserModel.findOne({email})
-                .select({ _id: 1, name: 1, password: 1 })
-                .lean() as { _id: any, name: string, password: string } | null;
+                .select({ _id: 1, name: 1, password: 1, character: 1 })
+                .lean() as { _id: any, name: string, password: string, character: string } | null;
             if (!verify) throw Error("해당 유저가 존재하지 않습니다.")
                 
             const verifyPassword = await bcrypt.compare(password, verify.password)
@@ -60,6 +60,7 @@ function userService() {
                 id: verify._id,
                 email: email,
                 name: verify.name,
+                character: verify.character,
                 access_token,
                 refresh_token
             }

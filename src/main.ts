@@ -22,6 +22,7 @@ fastify.register(fastifyCookie);
 
 fastify.register(cors, {
     origin: true, 
+    methods: ['GET', 'POST', 'PUT', 'OPTIONS'],
     credentials: true, 
     allowedHeaders: ['Content-Type', 'authorization']
 })
