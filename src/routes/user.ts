@@ -49,6 +49,7 @@ const userRoute = async (fastify: FastifyInstance) => {
                         id: userLogin.id,
                         email: userLogin.email,
                         name: userLogin.name,
+                        character: userLogin.character,
                         Authorization: userLogin.access_token
                     })
                 }
