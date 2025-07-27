@@ -12,6 +12,8 @@ const StoreSchema = new mongoose.Schema({
     average_star: { type: Number, required: true },
 });
 
+const StoreModel = mongoose.model("Store", StoreSchema);
+
 const searchQuerySchema = Type.Object({
     latitude: Type.Number(),
     longitude: Type.Number()
@@ -34,7 +36,7 @@ const searchSchema = {
 }
 
 export {
-    StoreSchema,
+    StoreModel,
 
     searchQuerySchema,
 
