@@ -15,6 +15,23 @@ const ReviewSchema = new mongoose.Schema({
 
 const ReviewModel = mongoose.model("Review", ReviewSchema);
 
+const registerSchema = {
+  body: Type.Object({
+    photo: Type.Any(), 
+    review: Type.String(),
+    store: Type.String(),
+  }),
+  consumes: ['multipart/form-data'],
+  response: {
+    200: Type.Object({
+      store: Type.Any(),
+      review: Type.Any(),
+    }),
+  },
+}
+
 export {
     ReviewModel,
+
+    registerSchema
 }
