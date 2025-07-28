@@ -15,23 +15,44 @@ const ReviewSchema = new mongoose.Schema({
 });
 
 const readMySchema = {
-  response: {
-    200: Type.Object({
-      count: Type.Number(),
-      reviews: Type.Array(
-        Type.Object({
-          _id: Type.String(),  
-          star: Type.Number(),
-          photo: Type.Array(Type.String()),
-          content: Type.String(),
-          
-          kakaoId: Type.String(),
-          userId: Type.String()
+    response: {
+        200: Type.Object({
+            count: Type.Number(),
+            reviews: Type.Array(
+                Type.Object({
+                    _id: Type.String(),
+                    star: Type.Number(),
+                    photo: Type.Array(Type.String()),
+                    content: Type.String(),
+                    kakaoId: Type.String(),
+                    userId: Type.String()
+                })
+            )
         })
-      )
-    })
-  }
+    }
 }
+
+const readQuerySchema = Type.Object({
+    kakaoId: Type.String()
+})
+
+const readSchema = {
+    query: readQuerySchema,
+    response: {
+        200: Type.Object({
+            reviews: Type.Array(
+                Type.Object({
+                    _id: Type.String(),
+                    star: Type.String(),
+                    photo: Type.Array(Type.String()),
+                    content: Type.String(),
+                    userName: Type.String()
+                })
+            )
+        })
+    }
+}
+
 
 
 const ReviewModel = mongoose.model("Review", ReviewSchema);
@@ -39,5 +60,8 @@ const ReviewModel = mongoose.model("Review", ReviewSchema);
 export {
     ReviewModel,
 
+    readQuerySchema,
+
     readMySchema,
+    readSchema,
 }
