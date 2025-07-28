@@ -5,7 +5,8 @@ import fs from "fs";
 import { pipeline } from "stream/promises";
 import { StoreModel } from "../schema/store";
 import storeService from "../services/store"
-import { readMySchema } from "../schema/review";
+import { readMySchema, readSchema } from "../schema/review";
+import { TReviewReadQuery } from "../schema/types";
 
 const reviewRoute = async (fastify: FastifyInstance) => {
     fastify.route({
@@ -103,6 +104,22 @@ const reviewRoute = async (fastify: FastifyInstance) => {
             try {
                 const readMy = await reviewService.readMy(userId)
                 rep.status(200).send(readMy)
+            }
+            catch(err) {
+                throw err
+            }
+        }
+    })
+    fastify.route({
+        method: 'GET',
+        url: '/read',
+        schema: readSchema,
+        handler: async (req: FastifyRequest<{Querystring: TReviewReadQuery}>, rep: FastifyReply) => {
+            const { kakaoId }  = req.query
+
+            try {
+                const readAll = await reviewService.read(kakaoId)
+                rep.status(200).send(readAll)
             }
             catch(err) {
                 throw err

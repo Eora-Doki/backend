@@ -52,10 +52,27 @@ function reviewService() {
             throw err
         }
     }
+    const read = async (kakaoId: string) => {
+        try {
+            const reviewRead = await ReviewModel.find({ kakaoId })
+                .select({ _id: 1, star: 1, photo: 1 ,content: 1, userName: 1 })
+            if (reviewRead.length === 0) {
+                return { message: "작성된 리뷰가 없습니다."}
+            }
+
+            return {
+                reviews: reviewRead
+            }
+        }
+        catch(err) {
+            throw err
+        }
+    }
 
     return {
         register,
-        readMy
+        readMy,
+        read
     }
 }
 
