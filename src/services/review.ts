@@ -35,9 +35,27 @@ function reviewService() {
             throw err
         }
     }
+    const readMy = async (userId: string) => {
+        try {
+            const reviewMyRead = await ReviewModel.find({ userId })
+                .select({ _id: 1, star: 1, photo: 1 ,content: 1, kakaoId: 1, userId: 1 })
+            if (reviewMyRead.length === 0) {
+                return { message: "작성한 리뷰가 없습니다." };
+            }
+
+            return {
+                count: reviewMyRead.length,
+                reviews: reviewMyRead
+            }
+        }
+        catch(err) {
+            throw err
+        }
+    }
 
     return {
         register,
+        readMy
     }
 }
 
