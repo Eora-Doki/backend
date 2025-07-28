@@ -91,13 +91,12 @@ function storeService() {
                 }
                 else {
                     const reviews = await ReviewModel.find({ kakaoId });
-                    if (reviews.length > 0) {
-                        const total = reviews.reduce((acc, cur) => acc + cur.star, 0);
-                        const avg = parseFloat((total / reviews.length).toFixed(1));
+                    const total = reviews.reduce((acc, cur) => acc + cur.star, 0) + star;
+                    const avg = parseFloat((total / (reviews.length + 1)).toFixed(1));
 
-                        store_info.average_star = avg;
-                        await store_info.save();
-                    }
+                    store_info.average_star = avg;
+                    await store_info.save();
+                    
                     return store_info;
                 }
             }
