@@ -9,6 +9,10 @@ import fastifySwaggerUi from "@fastify/swagger-ui";
 import { swaggerConfig, swaggerUiConfig } from "./config/swagger";
 import { connectDB } from "./db";
 import routes from "./routes";
+import fastifyMultipart from '@fastify/multipart';
+import fastifyStatic from '@fastify/static';
+import path from 'path';
+import { userPlugin } from './plugin/user'
 
 const fastify = Fastify({
     logger: true,
@@ -27,9 +31,16 @@ fastify.register(cors, {
     allowedHeaders: ['Content-Type', 'authorization']
 })
 
+fastify.register(fastifyStatic, {
+  root: path.join(__dirname, '../uploads'),
+  prefix: '/uploads',
+});
+
+fastify.register(userPlugin)
+fastify.register(fastifyMultipart)
+
 fastify.register(fastifySwagger, swaggerConfig)
 fastify.register(fastifySwaggerUi, swaggerUiConfig)
-
 fastify.register(routes)
 
 const start = async () => {
