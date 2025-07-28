@@ -9,7 +9,7 @@ const StoreSchema = new mongoose.Schema({
     phone: { type: String, default: "" },
     latitude: { type: Number, required: true }, 
     longitude: { type: Number, required: true },
-    average_star: { type: Number, required: true },
+    average_star: { type: Number, default: 0 },
 });
 
 const StoreModel = mongoose.model("Store", StoreSchema);
