@@ -7,13 +7,15 @@ function reviewService() {
         photo, 
         content, 
         kakaoId, 
-        userId
+        userId,
+        userName
     }: {
         star: number, 
         photo: string[],
          content: string, 
          kakaoId: string, 
-         userId: string
+         userId: string,
+         userName: string
     }) => {
 
         try {
@@ -23,7 +25,8 @@ function reviewService() {
                 content: content,
 
                 kakaoId: kakaoId,
-                userId: userId
+                userId: userId,
+                userName: userName
             })
 
             return reviewRegister
