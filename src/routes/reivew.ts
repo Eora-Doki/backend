@@ -5,16 +5,15 @@ import fs from "fs";
 import { pipeline } from "stream/promises";
 import { StoreModel } from "../schema/store";
 import storeService from "../services/store"
-import { registerSchema } from "../schema/review";
 
 const reviewRoute = async (fastify: FastifyInstance) => {
     fastify.route({
         method: 'POST',
         url: '/register',
-        schema: registerSchema,
         handler: async (req: FastifyRequest, rep: FastifyReply) => {
             const parts = await req.parts()
             const userId = req.user!.id
+            const userName = req.user!.name
 
             const photoPaths: string[] = []
             let info_review = ''
@@ -80,6 +79,7 @@ const reviewRoute = async (fastify: FastifyInstance) => {
                     content: review.content,
                     kakaoId: review.kakaoId,
                     userId,
+                    userName,
                 });
 
                 return rep.send({
