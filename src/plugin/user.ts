@@ -15,10 +15,11 @@ const User: FastifyPluginAsync = async (fastify) => {
         if (!authorization || !refresh_token) return
         
         try {
-            const verifyRefreshToken = jwt.verify(refresh_token, process.env.SRCRET_KEY!)
+            const verifyRefreshToken = jwt.verify(refresh_token, process.env.SECRET_KEY!)
             if (!verifyRefreshToken) throw Error("RefreshToken이 유효하지 않습니다.")
-
-            const decode = verfiyAccessToken(authorization)
+            
+            const token = authorization.replace('Bearer ', '')
+            const decode = verfiyAccessToken(token)
 
             req.user = { 
                 id: decode.id,
@@ -27,6 +28,8 @@ const User: FastifyPluginAsync = async (fastify) => {
             }
         }
         catch(error) {
+            console.log("authorization: ", authorization)
+            console.log("refresh_token: ", refresh_token)
             return
         }
     })
