@@ -14,8 +14,30 @@ const ReviewSchema = new mongoose.Schema({
     userName: { type: String, required: true }
 });
 
+const readMySchema = {
+  response: {
+    200: Type.Object({
+      count: Type.Number(),
+      reviews: Type.Array(
+        Type.Object({
+          _id: Type.String(),  
+          star: Type.Number(),
+          photo: Type.Array(Type.String()),
+          content: Type.String(),
+          
+          kakaoId: Type.String(),
+          userId: Type.String()
+        })
+      )
+    })
+  }
+}
+
+
 const ReviewModel = mongoose.model("Review", ReviewSchema);
 
 export {
     ReviewModel,
+
+    readMySchema,
 }
