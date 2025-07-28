@@ -5,6 +5,7 @@ import fs from "fs";
 import { pipeline } from "stream/promises";
 import { StoreModel } from "../schema/store";
 import storeService from "../services/store"
+import { readMySchema } from "../schema/review";
 
 const reviewRoute = async (fastify: FastifyInstance) => {
     fastify.route({
@@ -91,7 +92,23 @@ const reviewRoute = async (fastify: FastifyInstance) => {
                 return rep.status(500).send({ message: '리뷰 등록 실패', error: err });
             }
         }
-    });
-};
+    })
+    fastify.route({
+        method: 'GET',
+        url: '/read/my',
+        schema: readMySchema,
+        handler: async (req: FastifyRequest, rep: FastifyReply) => {
+            const userId = req.user!.id
+
+            try {
+                const readMy = await reviewService.readMy(userId)
+                rep.status(200).send(readMy)
+            }
+            catch(err) {
+                throw err
+            }
+        }
+    })
+}
 
 export default reviewRoute;
