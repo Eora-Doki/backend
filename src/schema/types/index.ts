@@ -1,7 +1,7 @@
 import { Static } from '@sinclair/typebox'
 import { headers, registerBodySchema, loginBodySchema, resetPasswordBodySchema } from '../user'
 import { searchQuerySchema } from '../store'
-import { readQuerySchema, updateBodySchema } from '../review'
+import { readQuerySchema, updateBodySchema, deleteQuerySchema } from '../review'
 
 type THeaders = Static<typeof headers>
 type TUserRegisterBody = Static<typeof registerBodySchema>
@@ -10,6 +10,7 @@ type TUserResetPasswordBody = Static<typeof resetPasswordBodySchema>
 type TStoreSearchQuery = Static<typeof searchQuerySchema>
 type TReviewReadQuery = Static<typeof readQuerySchema>
 type TReviewUpdateBody = Static<typeof updateBodySchema>
+type TReviewDeleteQuery = Static<typeof deleteQuerySchema>
 
 export {
     THeaders,
@@ -18,5 +19,6 @@ export {
     TUserResetPasswordBody,
     TStoreSearchQuery,
     TReviewReadQuery,
-    TReviewUpdateBody
+    TReviewUpdateBody,
+    TReviewDeleteQuery,
 }
