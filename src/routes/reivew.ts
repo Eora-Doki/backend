@@ -13,7 +13,7 @@ const reviewRoute = async (fastify: FastifyInstance) => {
         method: 'POST',
         url: '/register',
         handler: async (req: FastifyRequest, rep: FastifyReply) => {
-            const parts = await req.parts()
+            const parts = await (req as any).parts();
             const userId = req.user!.id
             const userName = req.user!.name
 
@@ -131,7 +131,7 @@ const reviewRoute = async (fastify: FastifyInstance) => {
         url: '/update',
         // schema: updateSchema,
         handler: async (req: FastifyRequest, rep: FastifyReply) => {
-            const parts = await req.parts()
+            const parts = await (req as any).parts();
             const userId = req.user!.id
 
             const photoPaths: string[] = []
@@ -155,6 +155,7 @@ const reviewRoute = async (fastify: FastifyInstance) => {
                 star: number,
                 content: string,
                 _id: string,
+                kakaoId: string
             }
 
             try {
@@ -170,7 +171,8 @@ const reviewRoute = async (fastify: FastifyInstance) => {
                     photo: photoPaths,
                     content: review.content,
                     _id: review._id,
-                    userId: userId
+                    userId: userId,
+                    kakaoId: review.kakaoId
                 })
                 return rep.send({
                     review: reviews
@@ -186,12 +188,13 @@ const reviewRoute = async (fastify: FastifyInstance) => {
         url: '/delete',
         schema: deleteSchema,
         handler: async (req: FastifyRequest<{Querystring: TReviewDeleteQuery}>, rep: FastifyReply) => {
-            const { _id } = req.query
+            const { _id, kakaoId } = req.query
             const userId = req.user!.id
 
             try {
                 const deleteMy = await reviewService.deleteMY({
                     _id: _id,
+                    kakaoId,
                     userId: userId
                 })
                 rep.status(200).send(deleteMy)
