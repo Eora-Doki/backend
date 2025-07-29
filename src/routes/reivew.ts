@@ -5,8 +5,8 @@ import fs from "fs";
 import { pipeline } from "stream/promises";
 import { StoreModel } from "../schema/store";
 import storeService from "../services/store"
-import { readMySchema, readSchema } from "../schema/review";
-import { TReviewReadQuery } from "../schema/types";
+import { readMySchema, readSchema, updateSchema } from "../schema/review";
+import { TReviewReadQuery, TReviewUpdateBody } from "../schema/types";
 
 const reviewRoute = async (fastify: FastifyInstance) => {
     fastify.route({
@@ -30,8 +30,8 @@ const reviewRoute = async (fastify: FastifyInstance) => {
                         photoPaths.push(`/uploads/${filename}`)
                     }
                 } else if (part.type === 'field') {
-                    if (part.fieldname === 'review') info_review = part.value as string;
-                    if (part.fieldname === 'store') info_store = part.value as string;
+                    if (part.fieldname === 'review') info_review = part.value as string
+                    if (part.fieldname === 'store') info_store = part.value as string
                 }
             }
 
@@ -56,11 +56,11 @@ const reviewRoute = async (fastify: FastifyInstance) => {
                 store = JSON.parse(info_store)
             } 
             catch (err) {
-                return rep.status(400).send({ message: '잘못된 JSON 형식입니다.' });
+                return rep.status(400).send({ message: '잘못된 JSON 형식입니다.' })
             }
 
             if (!store) {
-                return rep.status(400).send({ message: '가게 정보가 누락되었습니다.' });
+                return rep.status(400).send({ message: '가게 정보가 누락되었습니다.' })
             }
 
             try {
@@ -125,6 +125,61 @@ const reviewRoute = async (fastify: FastifyInstance) => {
                 throw err
             }
         }
+    })
+    fastify.route({
+        method: 'PUT',
+        url: '/update',
+        // schema: updateSchema,
+        handler: async (req: FastifyRequest, rep: FastifyReply) => {
+            const parts = await req.parts()
+            const userId = req.user!.id
+
+            const photoPaths: string[] = []
+            let info_review = ''
+
+            for await (const part of parts) {
+                if (part.type === 'file' && part.fieldname === 'photo') {
+                    if (part.filename) {
+                        const filename = Date.now() + '_' + part.filename
+                        const filePath = path.join(__dirname, '../../../uploads', filename)
+                        await pipeline(part.file, fs.createWriteStream(filePath))
+                        photoPaths.push(`/uploads/${filename}`)
+                    }
+                }
+                else if (part.type === 'field') {
+                    if (part.fieldname === 'review') info_review = part.value as string
+                }
+            }
+
+            let review: {
+                star: number,
+                content: string,
+                _id: string,
+            }
+
+            try {
+                review = JSON.parse(info_review)
+            } 
+            catch (err) {
+                return rep.status(400).send({ message: '잘못된 JSON 형식입니다.' })
+            }
+
+            try {
+                const reviews = await reviewService.update({
+                    star: review.star,
+                    photo: photoPaths,
+                    content: review.content,
+                    _id: review._id,
+                    userId: userId
+                })
+                return rep.send({
+                    review: reviews
+                });
+            }
+            catch(err) {
+                return rep.status(500).send({ message: '리뷰 수정 실패', error: err });
+            }
+        }   
     })
 }
 
