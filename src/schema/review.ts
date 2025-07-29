@@ -53,7 +53,29 @@ const readSchema = {
     }
 }
 
+const updateBodySchema = Type.Object({
+    star: Type.Number(),
+    photo: Type.String(),
+    content: Type.String(),
 
+    _id: Type.String(),
+})
+
+const updateSchema = {
+    body: updateBodySchema,
+    response: {
+        200: Type.Object({
+            _id: Type.String(),
+            star: Type.Number(),
+            photo: Type.String(),
+            content: Type.String(),
+
+            kakaoId: Type.String(),
+            userId: Type.String(),
+            userName: Type.String()
+        })
+    }
+}
 
 const ReviewModel = mongoose.model("Review", ReviewSchema);
 
@@ -61,7 +83,9 @@ export {
     ReviewModel,
 
     readQuerySchema,
+    updateBodySchema,
 
     readMySchema,
     readSchema,
+    updateSchema
 }
