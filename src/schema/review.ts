@@ -78,7 +78,8 @@ const updateSchema = {
 }
 
 const deleteQuerySchema = Type.Object({
-    _id: Type.String()
+    _id: Type.String(),
+    kakaoId: Type.String()
 })
 
 const deleteSchema = {
