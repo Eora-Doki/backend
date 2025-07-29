@@ -1,5 +1,6 @@
 import { ReviewModel } from "../schema/review"
 import { StoreModel } from "../schema/store"
+import { update_avg_star } from "../lib/store"
 
 function reviewService() {
     const register = async ({
@@ -74,12 +75,14 @@ function reviewService() {
         content,
         _id,
         userId,
+        kakaoId
     }: {
         star: number,
         photo: string[],
         content: string,
         _id: string
         userId: string,
+        kakaoId: string
     }) => {
         
         try {
@@ -103,6 +106,7 @@ function reviewService() {
                     }
                 }  
             )
+            await update_avg_star(kakaoId)
 
             const reviewUpdateValue = await ReviewModel.findOne({ _id })
 
@@ -114,9 +118,11 @@ function reviewService() {
     }
     const deleteMY = async ({ 
         _id,
+        kakaoId,
         userId
     }: {
         _id: string,
+        kakaoId: string,
         userId: string
     }) => {
         try {
@@ -131,6 +137,7 @@ function reviewService() {
             }
 
             const reviewDelete = await ReviewModel.deleteOne({ _id })
+            await update_avg_star(kakaoId)
 
             return { message: "해당 리뷰가 삭제되었습니다."}
         }
