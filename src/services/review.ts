@@ -112,12 +112,39 @@ function reviewService() {
             throw err
         }
     }
+    const deleteMY = async ({ 
+        _id,
+        userId
+    }: {
+        _id: string,
+        userId: string
+    }) => {
+        try {
+            const review = await ReviewModel.findOne({ _id })
+                .select({ userId })
+            if (!review || !review.userId) {
+                return { message: "해당 리뷰가 존재하지 않습니다."}
+            }
+
+            if (userId !== review.userId.toString()) {
+                return { message: "해당 리뷰의 수정 권한이 없습니다."}
+            }
+
+            const reviewDelete = await ReviewModel.deleteOne({ _id })
+
+            return { message: "해당 리뷰가 삭제되었습니다."}
+        }
+        catch(err) {
+            throw err
+        }
+    }
 
     return {
         register,
         readMy,
         read,
-        update
+        update,
+        deleteMY
     }
 }
 

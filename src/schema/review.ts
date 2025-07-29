@@ -77,6 +77,19 @@ const updateSchema = {
     }
 }
 
+const deleteQuerySchema = Type.Object({
+    _id: Type.String()
+})
+
+const deleteSchema = {
+    query: deleteQuerySchema,
+    response: {
+        200: Type.Object({
+            message: Type.String()
+        })
+    }
+}
+
 const ReviewModel = mongoose.model("Review", ReviewSchema);
 
 export {
@@ -84,8 +97,10 @@ export {
 
     readQuerySchema,
     updateBodySchema,
+    deleteQuerySchema,
 
     readMySchema,
     readSchema,
-    updateSchema
+    updateSchema,
+    deleteSchema,
 }

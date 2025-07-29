@@ -5,8 +5,8 @@ import fs from "fs";
 import { pipeline } from "stream/promises";
 import { StoreModel } from "../schema/store";
 import storeService from "../services/store"
-import { readMySchema, readSchema, updateSchema } from "../schema/review";
-import { TReviewReadQuery, TReviewUpdateBody } from "../schema/types";
+import { deleteSchema, readMySchema, readSchema, updateSchema } from "../schema/review";
+import { TReviewDeleteQuery, TReviewReadQuery, TReviewUpdateBody } from "../schema/types";
 
 const reviewRoute = async (fastify: FastifyInstance) => {
     fastify.route({
@@ -180,6 +180,26 @@ const reviewRoute = async (fastify: FastifyInstance) => {
                 return rep.status(500).send({ message: '리뷰 수정 실패', error: err });
             }
         }   
+    })
+    fastify.route({
+        method: 'DELETE',
+        url: '/delete',
+        schema: deleteSchema,
+        handler: async (req: FastifyRequest<{Querystring: TReviewDeleteQuery}>, rep: FastifyReply) => {
+            const { _id } = req.query
+            const userId = req.user!.id
+
+            try {
+                const deleteMy = await reviewService.deleteMY({
+                    _id: _id,
+                    userId: userId
+                })
+                rep.status(200).send(deleteMy)
+            }
+            catch(err) {
+                throw err
+            }
+        }
     })
 }
 
