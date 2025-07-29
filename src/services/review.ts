@@ -12,10 +12,10 @@ function reviewService() {
     }: {
         star: number, 
         photo: string[],
-         content: string, 
-         kakaoId: string, 
-         userId: string,
-         userName: string
+        content: string, 
+        kakaoId: string, 
+        userId: string,
+        userName: string
     }) => {
 
         try {
@@ -68,11 +68,56 @@ function reviewService() {
             throw err
         }
     }
+    const update = async ({
+        star,
+        photo,
+        content,
+        _id,
+        userId,
+    }: {
+        star: number,
+        photo: string[],
+        content: string,
+        _id: string
+        userId: string,
+    }) => {
+        
+        try {
+            const review = await ReviewModel.findOne({ _id })
+                .select({ userId: 1 })
+            if (!review || !review.userId) {
+                return { message: "해당 리뷰가 존재하지 않습니다." }
+            }
+
+            if (userId !== review.userId.toString()) {
+                return { message: "리뷰 수정 권한이 없습니다." }
+            }
+
+            const reviewUpdate = await ReviewModel.updateOne(
+                { _id },
+                {
+                    $set: {
+                        star,
+                        photo,
+                        content
+                    }
+                }  
+            )
+
+            const reviewUpdateValue = await ReviewModel.findOne({ _id })
+
+            return reviewUpdateValue
+        }
+        catch(err) {
+            throw err
+        }
+    }
 
     return {
         register,
         readMy,
-        read
+        read,
+        update
     }
 }
 
