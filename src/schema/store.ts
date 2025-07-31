@@ -22,15 +22,15 @@ const searchQuerySchema = Type.Object({
 const searchSchema = {
     query: searchQuerySchema,
     response: {
-        200: Type.Array(Object({
-            kakaoId: Type.String(),
-            name: Type.String(),
-            address: Type.String(),
-            place_url: Type.String(),
-            phone: Type.String(),
-            category_name: Type.String(),
-            latitude: Type.Number(),
-            longitude: Type.Number()
+        200: Type.Array(
+            Type.Object({
+                kakaoId: Type.String(),
+                name: Type.String(),
+                address: Type.String(),
+                place_url: Type.String(),
+                phone: Type.String(),
+                latitude: Type.Number(),
+                longitude: Type.Number()
         }))
     }
 }
