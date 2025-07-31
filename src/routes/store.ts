@@ -6,7 +6,7 @@ import storeService from "../services/store"
 const storeRoute = async (fastify: FastifyInstance) => {
     fastify.route({
         method: 'GET',
-        url: '/search',
+        url: '',
         schema: searchSchema,
         handler: async (req: FastifyRequest<{Querystring: TStoreSearchQuery}>, rep: FastifyReply ) => {
             const { latitude, longitude } = req.query

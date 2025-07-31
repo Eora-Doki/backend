@@ -33,7 +33,6 @@ function storeService() {
                             address: doc.road_address_name || doc.address_name,
                             place_url: doc.place_url,
                             phone: doc.phone || "",
-                            category_name: doc.category_name,
                             longitude: doc.x,
                             latitude: doc.y,
                     }));
@@ -42,11 +41,11 @@ function storeService() {
 
             const stores = results.flat();
 
-            const returnStores = Array.from(
+            const stores_info = Array.from(
                 new Map(stores.map(store => [store.kakaoId, store])).values()
             );
 
-            return returnStores;
+            return stores_info;
         }
         catch (err) {
             throw err
