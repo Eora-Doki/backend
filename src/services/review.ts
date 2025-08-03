@@ -24,7 +24,6 @@ function reviewService() {
                 star: star,
                 photo: photo,
                 content: content,
-
                 kakaoId: kakaoId,
                 userId: userId,
                 userName: userName
@@ -40,13 +39,10 @@ function reviewService() {
         try {
             const reviewMyRead = await ReviewModel.find({ userId })
                 .select({ _id: 1, star: 1, photo: 1 ,content: 1, kakaoId: 1, userId: 1 })
-            if (reviewMyRead.length === 0) {
-                return { message: "작성한 리뷰가 없습니다." };
-            }
 
             return {
                 count: reviewMyRead.length,
-                reviews: reviewMyRead
+                review: reviewMyRead
             }
         }
         catch(err) {
@@ -57,12 +53,9 @@ function reviewService() {
         try {
             const reviewRead = await ReviewModel.find({ kakaoId })
                 .select({ _id: 1, star: 1, photo: 1 ,content: 1, userName: 1 })
-            if (reviewRead.length === 0) {
-                return { message: "작성된 리뷰가 없습니다."}
-            }
-
+            
             return {
-                reviews: reviewRead
+                review: reviewRead 
             }
         }
         catch(err) {
@@ -73,20 +66,20 @@ function reviewService() {
         star,
         photo,
         content,
-        _id,
+        reviewId,
         userId,
         kakaoId
     }: {
         star: number,
         photo: string[],
         content: string,
-        _id: string
+        reviewId: string
         userId: string,
         kakaoId: string
     }) => {
         
         try {
-            const review = await ReviewModel.findOne({ _id })
+            const review = await ReviewModel.findOne({ _id: reviewId })
                 .select({ userId: 1 })
             if (!review || !review.userId) {
                 return { message: "해당 리뷰가 존재하지 않습니다." }
@@ -97,7 +90,7 @@ function reviewService() {
             }
 
             const reviewUpdate = await ReviewModel.updateOne(
-                { _id },
+                { _id: reviewId },
                 {
                     $set: {
                         star,
@@ -108,7 +101,7 @@ function reviewService() {
             )
             await update_avg_star(kakaoId)
 
-            const reviewUpdateValue = await ReviewModel.findOne({ _id })
+            const reviewUpdateValue = await ReviewModel.findOne({ _id: reviewId })
 
             return reviewUpdateValue
         }

@@ -6,16 +6,16 @@ import { pipeline } from "stream/promises";
 import { StoreModel } from "../schema/store";
 import storeService from "../services/store"
 import { deleteSchema, readMySchema, readSchema, updateSchema } from "../schema/review";
-import { TReviewDeleteQuery, TReviewReadQuery, TReviewUpdateBody } from "../schema/types";
+import { TReviewKakaoIdParams, TReviewKakaoIdReviewIdParams, TReviewUpdateBody, TReviewUserIdQuery } from "../schema/types";
+import { userPlugin } from "../plugin/user";
 
 const reviewRoute = async (fastify: FastifyInstance) => {
     fastify.route({
         method: 'POST',
-        url: '/register',
-        handler: async (req: FastifyRequest, rep: FastifyReply) => {
+        url: '/:kakaoId/reviews',
+        handler: async (req: FastifyRequest<{ Params: TReviewKakaoIdParams }>, rep: FastifyReply) => {
             const parts = await (req as any).parts();
-            const userId = req.user!.id
-            const userName = req.user!.name
+            const { kakaoId } = req.params
 
             const photoPaths: string[] = []
             let info_review = ''
@@ -38,11 +38,11 @@ const reviewRoute = async (fastify: FastifyInstance) => {
             let review: {
                 star: number
                 content: string
-                kakaoId: string
+                userId: string
+                userName: string
             }
             
             let store: {
-                kakaoId: string
                 name: string
                 address: string
                 place_url: string
@@ -65,7 +65,7 @@ const reviewRoute = async (fastify: FastifyInstance) => {
 
             try {
                 const stores = await storeService.register({
-                    kakaoId: store.kakaoId,
+                    kakaoId,
                     name: store.name,
                     address: store.address,
                     place_url: store.place_url,
@@ -79,9 +79,9 @@ const reviewRoute = async (fastify: FastifyInstance) => {
                     star: review.star,
                     photo: photoPaths,
                     content: review.content,
-                    kakaoId: review.kakaoId,
-                    userId,
-                    userName,
+                    kakaoId,
+                    userId: review.userId,
+                    userName: review.userName,
                 });
 
                 return rep.send({
@@ -96,26 +96,10 @@ const reviewRoute = async (fastify: FastifyInstance) => {
     })
     fastify.route({
         method: 'GET',
-        url: '/read/my',
-        schema: readMySchema,
-        handler: async (req: FastifyRequest, rep: FastifyReply) => {
-            const userId = req.user!.id
-
-            try {
-                const readMy = await reviewService.readMy(userId)
-                rep.status(200).send(readMy)
-            }
-            catch(err) {
-                throw err
-            }
-        }
-    })
-    fastify.route({
-        method: 'GET',
-        url: '/read',
+        url: '/:kakaoId/reviews',
         schema: readSchema,
-        handler: async (req: FastifyRequest<{Querystring: TReviewReadQuery}>, rep: FastifyReply) => {
-            const { kakaoId }  = req.query
+        handler: async (req: FastifyRequest<{ Params: TReviewKakaoIdParams }>, rep: FastifyReply) => {
+            const { kakaoId } = req.params
 
             try {
                 const readAll = await reviewService.read(kakaoId)
@@ -127,12 +111,12 @@ const reviewRoute = async (fastify: FastifyInstance) => {
         }
     })
     fastify.route({
-        method: 'PUT',
-        url: '/update',
+        method: 'PATCH',
+        url: '/:kakaoId/reviews/:reviewId',
         // schema: updateSchema,
-        handler: async (req: FastifyRequest, rep: FastifyReply) => {
-            const parts = await (req as any).parts();
-            const userId = req.user!.id
+        handler: async (req: FastifyRequest<{ Params: TReviewKakaoIdReviewIdParams }>, rep: FastifyReply) => {
+            const parts = await (req as any).parts()
+            const { kakaoId, reviewId } = req.params
 
             const photoPaths: string[] = []
             let info_review = ''
@@ -152,10 +136,10 @@ const reviewRoute = async (fastify: FastifyInstance) => {
             }
 
             let review: {
-                star: number,
-                content: string,
-                _id: string,
-                kakaoId: string
+                star: number
+                content: string
+                userId: string
+                userName: string
             }
 
             try {
@@ -170,9 +154,9 @@ const reviewRoute = async (fastify: FastifyInstance) => {
                     star: review.star,
                     photo: photoPaths,
                     content: review.content,
-                    _id: review._id,
-                    userId: userId,
-                    kakaoId: review.kakaoId
+                    reviewId: reviewId,
+                    kakaoId: kakaoId,
+                    userId: review.userId,
                 })
                 return rep.send({
                     review: reviews
@@ -185,15 +169,15 @@ const reviewRoute = async (fastify: FastifyInstance) => {
     })
     fastify.route({
         method: 'DELETE',
-        url: '/delete',
+        url: '/:kakaoId/reviews/reviewId',
         schema: deleteSchema,
-        handler: async (req: FastifyRequest<{Querystring: TReviewDeleteQuery}>, rep: FastifyReply) => {
-            const { _id, kakaoId } = req.query
-            const userId = req.user!.id
+        handler: async (req: FastifyRequest<{ Params: TReviewKakaoIdReviewIdParams, Querystring: TReviewUserIdQuery }>, rep: FastifyReply) => {
+            const { kakaoId, reviewId } = req.params
+            const { userId } = req.query
 
             try {
                 const deleteMy = await reviewService.deleteMY({
-                    _id: _id,
+                    _id: reviewId,
                     kakaoId,
                     userId: userId
                 })

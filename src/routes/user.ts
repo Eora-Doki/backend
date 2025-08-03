@@ -1,8 +1,10 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { registerSchema, loginSchema, resetPasswordSchema, logoutSchema } from "../schema/user";
-import { TUserRegisterBody, TUserLoginBody, TUserResetPasswordBody, TUserResetPasswordParams } from "../schema/types";
+import { TUserRegisterBody, TUserLoginBody, TUserResetPasswordBody, TUserResetPasswordParams, TReviewUserIdParams } from "../schema/types";
 import fastifyCookie from '@fastify/cookie'
 import userService from "../services/user.ts"
+import { readMySchema } from "../schema/review.ts";
+import reviewService from "../services/review";
 
 const userRoute = async (fastify: FastifyInstance) => {
     fastify.route({
@@ -106,6 +108,22 @@ const userRoute = async (fastify: FastifyInstance) => {
                     throw err
                 }
 
+        }
+    })
+    fastify.route({
+        method: 'GET',
+        url: '/:userId/reviews',
+        schema: readMySchema,
+        handler: async (req: FastifyRequest<{ Params: TReviewUserIdParams }>, rep: FastifyReply) => {
+            const { userId } = req.params
+
+            try {
+                const readMy = await reviewService.readMy(userId)
+                rep.status(200).send(readMy)
+            }
+            catch(err) {
+                throw err
+            }
         }
     })
 }

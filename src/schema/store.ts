@@ -10,7 +10,16 @@ const StoreSchema = new mongoose.Schema({
     latitude: { type: Number, required: true }, 
     longitude: { type: Number, required: true },
     average_star: { type: Number, default: 0 },
-});
+}, {
+    toJSON: {
+        virtuals: true,
+        versionKey: false,      
+        transform(doc: any, ret: any) {
+            ret.id = ret._id
+            delete ret._id
+        }
+    }
+})
 
 const StoreModel = mongoose.model("Store", StoreSchema);
 

@@ -2,7 +2,22 @@ import { Type } from '@sinclair/typebox'
 import mongoose, { Types } from 'mongoose';
 import { headers } from './user';
 
-const header = headers
+const paramsKakaoId = Type.Object({
+    kakaoId: Type.String()
+})
+
+const paramsKakaoIdReviewId = Type.Object({
+    kakaoId: Type.String(),
+    reviewId: Type.String()
+})
+
+const paramsUserId = Type.Object({
+    userId: Type.String()
+})
+
+const queryUserId = Type.Object({
+    userId: Type.String()
+})
 
 const ReviewSchema = new mongoose.Schema({
     star: { type: Number, required: true },
@@ -12,15 +27,25 @@ const ReviewSchema = new mongoose.Schema({
     kakaoId: { type: String, ref: 'Store' },
     userId: { type: Types.ObjectId, ref: 'User' },
     userName: { type: String, required: true }
-});
+}, {
+    toJSON: {
+        virtuals: true,
+        versionKey: false,      
+        transform(doc: any, ret: any) {
+            ret.id = ret._id
+            delete ret._id
+        }
+    }
+})
 
 const readMySchema = {
+    params: paramsUserId,
     response: {
         200: Type.Object({
             count: Type.Number(),
-            reviews: Type.Array(
+            review: Type.Array(
                 Type.Object({
-                    _id: Type.String(),
+                    id: Type.String(),
                     star: Type.Number(),
                     photo: Type.Array(Type.String()),
                     content: Type.String(),
@@ -32,18 +57,14 @@ const readMySchema = {
     }
 }
 
-const readQuerySchema = Type.Object({
-    kakaoId: Type.String()
-})
-
 const readSchema = {
-    query: readQuerySchema,
+    params: paramsKakaoId,
     response: {
         200: Type.Object({
-            reviews: Type.Array(
+            review: Type.Array(
                 Type.Object({
-                    _id: Type.String(),
-                    star: Type.String(),
+                    id: Type.String(),
+                    star: Type.Number(),
                     photo: Type.Array(Type.String()),
                     content: Type.String(),
                     userName: Type.String()
@@ -58,14 +79,15 @@ const updateBodySchema = Type.Object({
     photo: Type.String(),
     content: Type.String(),
 
-    _id: Type.String(),
+    id: Type.String(),
 })
 
 const updateSchema = {
+    params: paramsKakaoIdReviewId,
     body: updateBodySchema,
     response: {
         200: Type.Object({
-            _id: Type.String(),
+            id: Type.String(),
             star: Type.Number(),
             photo: Type.String(),
             content: Type.String(),
@@ -77,13 +99,9 @@ const updateSchema = {
     }
 }
 
-const deleteQuerySchema = Type.Object({
-    _id: Type.String(),
-    kakaoId: Type.String()
-})
-
 const deleteSchema = {
-    query: deleteQuerySchema,
+    params: paramsKakaoIdReviewId,
+    query: queryUserId,
     response: {
         200: Type.Object({
             message: Type.String()
@@ -96,9 +114,11 @@ const ReviewModel = mongoose.model("Review", ReviewSchema);
 export {
     ReviewModel,
 
-    readQuerySchema,
+    paramsKakaoId,
+    paramsKakaoIdReviewId,
+    paramsUserId,
+    queryUserId,
     updateBodySchema,
-    deleteQuerySchema,
 
     readMySchema,
     readSchema,
