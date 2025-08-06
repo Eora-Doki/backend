@@ -1,10 +1,11 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { registerSchema, loginSchema, resetPasswordSchema, logoutSchema } from "../schema/user";
-import { TUserRegisterBody, TUserLoginBody, TUserResetPasswordBody, TUserResetPasswordParams, TReviewUserIdParams } from "../schema/types";
+import { TUserRegisterBody, TUserLoginBody, TUserResetPasswordBody, TReviewUserIdParams } from "../schema/types";
 import fastifyCookie from '@fastify/cookie'
 import userService from "../services/user.ts"
 import { readMySchema } from "../schema/review.ts";
 import reviewService from "../services/review";
+import { userPlugin } from "../plugin/user";
 
 const userRoute = async (fastify: FastifyInstance) => {
     fastify.route({
@@ -89,11 +90,11 @@ const userRoute = async (fastify: FastifyInstance) => {
     })
     fastify.route({
         method: 'PATCH',
-        url: '/:userId/password',
+        url: '/reset_password',
         schema: resetPasswordSchema,
-        handler: async (req: FastifyRequest<{Body: TUserResetPasswordBody, Params: TUserResetPasswordParams}>, rep: FastifyReply ) => {
+        handler: async (req: FastifyRequest<{Body: TUserResetPasswordBody}>, rep: FastifyReply ) => {
                 const { email, password } = req.body
-                const { userId } = req.params
+                const userId = req.user!.id
 
                 try {
                     const resetPassword = await userService.resetPassword({
