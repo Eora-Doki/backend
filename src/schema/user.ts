@@ -73,17 +73,12 @@ const logoutSchema = {
     }
 }
 
-const resetPasswordParamsSchema = Type.Object({
-    userId: Type.String()
-})
-
 const resetPasswordBodySchema = Type.Object({
     email: Type.String(),
     password: Type.String()
 })
 
 const resetPasswordSchema = {
-    params: resetPasswordParamsSchema,
     body: resetPasswordBodySchema,
     response: {
         200: Type.Object({
@@ -99,7 +94,6 @@ export {
     headers,
     registerBodySchema,
     loginBodySchema,
-    resetPasswordParamsSchema,
     resetPasswordBodySchema,
 
     registerSchema,
