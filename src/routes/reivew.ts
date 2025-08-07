@@ -1,13 +1,14 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import reviewService from "../services/review";
-import path from "path";
-import fs from "fs";
-import { pipeline } from "stream/promises";
 import { StoreModel } from "../schema/store";
 import storeService from "../services/store"
 import { deleteSchema, readMySchema, readSchema, updateSchema } from "../schema/review";
 import { TReviewKakaoIdParams, TReviewKakaoIdReviewIdParams, TReviewUpdateBody, TReviewUserIdQuery } from "../schema/types";
 import { userPlugin } from "../plugin/user";
+import { uploadToS3 } from "../utils/s3Upload";
+// import path from "path";
+// import fs from "fs";
+// import { pipeline } from "stream/promises";
 
 const reviewRoute = async (fastify: FastifyInstance) => {
     fastify.route({
@@ -24,10 +25,12 @@ const reviewRoute = async (fastify: FastifyInstance) => {
             for await (const part of parts) {
                 if (part.type === 'file' && part.fieldname === 'photo') {
                     if (part.filename) {
-                        const filename = Date.now() + '_' + part.filename
-                        const filePath = path.join(__dirname, '../../../uploads', filename)
-                        await pipeline(part.file, fs.createWriteStream(filePath))
-                        photoPaths.push(`/uploads/${filename}`)
+                        const s3Url = await uploadToS3(part.file, part.filename, part.mimetype);
+                        photoPaths.push(s3Url);
+                        // const filename = Date.now() + '_' + part.filename
+                        // const filePath = path.join(__dirname, '../../../uploads', filename)
+                        // await pipeline(part.file, fs.createWriteStream(filePath))
+                        // photoPaths.push(`/uploads/${filename}`)
                     }
                 } else if (part.type === 'field') {
                     if (part.fieldname === 'review') info_review = part.value as string
@@ -124,10 +127,12 @@ const reviewRoute = async (fastify: FastifyInstance) => {
             for await (const part of parts) {
                 if (part.type === 'file' && part.fieldname === 'photo') {
                     if (part.filename) {
-                        const filename = Date.now() + '_' + part.filename
-                        const filePath = path.join(__dirname, '../../../uploads', filename)
-                        await pipeline(part.file, fs.createWriteStream(filePath))
-                        photoPaths.push(`/uploads/${filename}`)
+                        const s3Url = await uploadToS3(part.file, part.filename, part.mimetype);
+                        photoPaths.push(s3Url);
+                        // const filename = Date.now() + '_' + part.filename
+                        // const filePath = path.join(__dirname, '../../../uploads', filename)
+                        // await pipeline(part.file, fs.createWriteStream(filePath))
+                        // photoPaths.push(`/uploads/${filename}`)
                     }
                 }
                 else if (part.type === 'field') {
