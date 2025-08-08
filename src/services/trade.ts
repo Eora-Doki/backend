@@ -70,11 +70,53 @@ function tradeService() {
             throw err
         }
     }
-          
+    const update = async({
+        tradesId,
+        title,
+        price,
+        description,
+        photo,
+        userId,
+        userName,
+
+    }: {
+        tradesId: string,
+        title: string,
+        price: number,
+        description: string,
+        photo: string[]
+        userId: string,
+        userName: string
+    }) => {
+
+        try {
+            const tradeUpdate = await TradeModel.updateOne(
+                { _id: tradesId },
+                {
+                    $set: {
+                        title,
+                        price,
+                        description,
+                        photo,
+                        userId,
+                        userName
+                    }
+                }
+            )
+            const returnValue = await TradeModel.findById( tradesId )
+
+            return returnValue 
+        }
+        catch(err) {
+            throw err
+        }
+    }
+
     return {
         register,
         readAll,
         read,
+        update,
     }
 }
 
