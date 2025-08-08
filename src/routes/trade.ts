@@ -1,6 +1,8 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { uploadToS3 } from "../utils/s3Upload";
 import tradeService from "../services/trade"
+import { readAllSchema, readSchema } from "../schema/trade";
+import { TTradeIdParams } from "../schema/types";
 
 const tradeRoute = async (fastify: FastifyInstance) => {
     fastify.route({
@@ -50,6 +52,42 @@ const tradeRoute = async (fastify: FastifyInstance) => {
                 return rep.send({
                     trade: trades
                 })
+            }
+            catch(err) {
+                throw err
+            }
+        }
+    })
+    fastify.route({
+        method: 'GET',
+        url: '',
+        schema: readAllSchema,
+        handler: async(req: FastifyRequest, rep: FastifyReply) => {
+            try {
+                const trades = await tradeService.readAll()
+                return {
+                    trade: trades
+                }
+            }
+            catch(err) {
+                throw err
+            }
+        }
+    })
+    fastify.route({
+        method: 'GET',
+        url: '/:tradesId',
+        schema: readSchema,
+        handler: async(req: FastifyRequest<{ Params: TTradeIdParams }>, rep: FastifyReply) => {
+            const { tradesId } = req.params
+
+            try {
+                const trade = await tradeService.read({ tradesId })
+                if (!trade) {
+                    return rep.status(404).send({ message: '해당 게시글이 없습니다.' })
+                }
+
+                rep.send( trade )
             }
             catch(err) {
                 throw err
