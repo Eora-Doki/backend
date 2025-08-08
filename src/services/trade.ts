@@ -128,6 +128,32 @@ function tradeService() {
             throw err
         }
     }
+    const deleteMy = async({
+        tradesId,
+        userId
+    }: {
+        tradesId: string,
+        userId: string
+    }) => {
+        try {
+            const tradeDelete = await TradeModel.findOne({
+                _id: tradesId
+            }).select({ userId: 1 })
+
+            if (!tradeDelete) {
+                return { message: "해당 게시글이 존재하지 않습니다."}
+            }
+            if ((userId !== tradeDelete.userId!.toString())) {
+                return { message: "해당 게시글의 삭제 권한이 없습니다."}
+            }
+
+            await TradeModel.deleteOne({ _id: tradesId })
+            return { message: "해당 게시글의 삭제가 완료되었습니다."}
+        }
+        catch(err) {
+            throw err
+        }
+    }
 
     return {
         register,
@@ -135,6 +161,7 @@ function tradeService() {
         read,
         readMy,
         update,
+        deleteMy,
     }
 }
 

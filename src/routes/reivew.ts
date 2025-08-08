@@ -3,7 +3,7 @@ import reviewService from "../services/review";
 import { StoreModel } from "../schema/store";
 import storeService from "../services/store"
 import { deleteSchema, readMySchema, readSchema, updateSchema } from "../schema/review";
-import { TReviewKakaoIdParams, TReviewKakaoIdReviewIdParams, TReviewUpdateBody, TReviewUserIdQuery } from "../schema/types";
+import { TReviewKakaoIdParams, TReviewKakaoIdReviewIdParams, TReviewUpdateBody, TUserIdQuery } from "../schema/types";
 import { userPlugin } from "../plugin/user";
 import { uploadToS3 } from "../utils/s3Upload";
 // import path from "path";
@@ -176,7 +176,7 @@ const reviewRoute = async (fastify: FastifyInstance) => {
         method: 'DELETE',
         url: '/:kakaoId/reviews/reviewId',
         schema: deleteSchema,
-        handler: async (req: FastifyRequest<{ Params: TReviewKakaoIdReviewIdParams, Querystring: TReviewUserIdQuery }>, rep: FastifyReply) => {
+        handler: async (req: FastifyRequest<{ Params: TReviewKakaoIdReviewIdParams, Querystring: TUserIdQuery }>, rep: FastifyReply) => {
             const { kakaoId, reviewId } = req.params
             const { userId } = req.query
 

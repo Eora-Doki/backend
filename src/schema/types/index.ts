@@ -12,7 +12,7 @@ type TStoreSearchQuery = Static<typeof searchQuerySchema>
 type TReviewKakaoIdParams = Static<typeof paramsKakaoId>
 type TReviewKakaoIdReviewIdParams = Static<typeof paramsKakaoIdReviewId>
 type TUserIdParams = Static<typeof paramsUserId>
-type TReviewUserIdQuery = Static<typeof queryUserId>
+type TUserIdQuery = Static<typeof queryUserId>
 type TReviewUpdateBody = Static<typeof updateBodySchema>
 type TTradeIdParams = Static<typeof paramsTradesId>
 
@@ -25,7 +25,7 @@ export {
     TReviewKakaoIdParams,
     TReviewKakaoIdReviewIdParams,
     TUserIdParams,
-    TReviewUserIdQuery,
+    TUserIdQuery,
     TReviewUpdateBody,
     TTradeIdParams,
 }

@@ -1,8 +1,8 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { uploadToS3 } from "../utils/s3Upload";
 import tradeService from "../services/trade"
-import { readAllSchema, readSchema } from "../schema/trade";
-import { TTradeIdParams } from "../schema/types";
+import { deleteSchema, readAllSchema, readSchema } from "../schema/trade";
+import { TTradeIdParams, TUserIdQuery } from "../schema/types";
 
 const tradeRoute = async (fastify: FastifyInstance) => {
     fastify.route({
@@ -146,6 +146,26 @@ const tradeRoute = async (fastify: FastifyInstance) => {
                 throw err
             }
 
+        }
+    })
+    fastify.route({
+        method: 'DELETE',
+        url: '/:tradesId',
+        schema: deleteSchema,
+        handler: async(req: FastifyRequest<{ Params: TTradeIdParams, Querystring: TUserIdQuery }>, rep: FastifyReply) => {
+            const { tradesId } = req.params
+            const { userId } = req.query
+
+            try {
+                const trades = await tradeService.deleteMy({
+                    tradesId, 
+                    userId
+                })
+                rep.send(trades)
+            }
+            catch(err) {
+                throw err
+            }
         }
     })
 }
