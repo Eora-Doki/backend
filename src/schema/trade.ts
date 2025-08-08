@@ -1,5 +1,6 @@
 import { Type } from '@sinclair/typebox'
 import mongoose, { Types } from 'mongoose';
+import { queryUserId } from './review';
 
 const paramsTradesId = Type.Object({
     tradesId: Type.String()
@@ -87,6 +88,16 @@ const readMyTradesSchema = {
     }
 }
 
+const deleteSchema = {
+    query: queryUserId,
+    params: paramsTradesId,
+    response: {
+        200: Type.Object({
+            message: Type.String()
+        })
+    }
+}
+
 export {
     TradeModel,
 
@@ -95,5 +106,6 @@ export {
 
     readAllSchema,
     readSchema,
-    readMyTradesSchema
+    readMyTradesSchema,
+    deleteSchema,
 }
