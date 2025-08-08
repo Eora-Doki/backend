@@ -107,6 +107,14 @@ function tradeService() {
     }) => {
 
         try {
+            const verify = await TradeModel.findById( tradesId )
+                .select({ userId: 1 })
+            if (!verify) {
+                return { message: "해당 게시글은 존재하지 않습니다."}
+            }
+            if (userId !== verify.userId!.toString()) {
+                return { message: "해당 게시글의 수정 권한이 없슨디ㅏ."}
+            }
             const tradeUpdate = await TradeModel.updateOne(
                 { _id: tradesId },
                 {
