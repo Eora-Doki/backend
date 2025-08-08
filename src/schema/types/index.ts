@@ -11,7 +11,7 @@ type TUserResetPasswordBody = Static<typeof resetPasswordBodySchema>
 type TStoreSearchQuery = Static<typeof searchQuerySchema>
 type TReviewKakaoIdParams = Static<typeof paramsKakaoId>
 type TReviewKakaoIdReviewIdParams = Static<typeof paramsKakaoIdReviewId>
-type TReviewUserIdParams = Static<typeof paramsUserId>
+type TUserIdParams = Static<typeof paramsUserId>
 type TReviewUserIdQuery = Static<typeof queryUserId>
 type TReviewUpdateBody = Static<typeof updateBodySchema>
 type TTradeIdParams = Static<typeof paramsTradesId>
@@ -24,7 +24,7 @@ export {
     TStoreSearchQuery,
     TReviewKakaoIdParams,
     TReviewKakaoIdReviewIdParams,
-    TReviewUserIdParams,
+    TUserIdParams,
     TReviewUserIdQuery,
     TReviewUpdateBody,
     TTradeIdParams,
