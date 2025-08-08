@@ -1,6 +1,10 @@
 import { Type } from '@sinclair/typebox'
 import mongoose, { Types } from 'mongoose';
 
+const paramsTradesId = Type.Object({
+    tradesId: Type.String()
+})
+
 const TradeSchema = new mongoose.Schema({
     title: { type: String, required: true },
     price: { type: Number, required: true },
@@ -22,8 +26,48 @@ TradeSchema.set("toJSON", {
     }
 })
 
-const TradeModel = mongoose.model("Trade", TradeSchema);
+const TradeModel = mongoose.model("Trade", TradeSchema)
+
+const readAllSchema = {
+    response: {
+        200: Type.Object({
+            trade: Type.Array(
+                Type.Object({
+                    id: Type.String(),
+                    title: Type.String(),
+                    price: Type.Number(),
+                    description: Type.String(),
+                    photo: Type.Array(Type.String()),
+                    heart: Type.Number(),
+                    userName: Type.String(),
+                    createdAt: Type.String(),
+                })
+            )
+        })
+    }
+}
+
+const readSchema = {
+    params: paramsTradesId,
+    response: {
+        200: Type.Object({
+            id: Type.String(),
+            title: Type.String(),
+            price: Type.Number(),
+            description: Type.String(),
+            photo: Type.Array(Type.String()),
+            heart: Type.Number(),
+            userName: Type.String(),
+            createdAt: Type.String(),
+        })
+    }
+}
 
 export {
     TradeModel,
+
+    paramsTradesId,
+
+    readAllSchema,
+    readSchema,
 }
