@@ -70,6 +70,23 @@ function tradeService() {
             throw err
         }
     }
+    const readMy = async({
+        userId
+    }: {
+        userId: string
+    }) => {
+        try {
+            const tradeRead = await TradeModel.find({
+                userId: userId
+            })
+            return {
+                trade: tradeRead
+            }
+        }
+        catch(err) {
+            throw(err)
+        }
+    }
     const update = async({
         tradesId,
         title,
@@ -116,6 +133,7 @@ function tradeService() {
         register,
         readAll,
         read,
+        readMy,
         update,
     }
 }

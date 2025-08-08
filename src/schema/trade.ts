@@ -5,6 +5,10 @@ const paramsTradesId = Type.Object({
     tradesId: Type.String()
 })
 
+const paramsUserId = Type.Object({
+    userId: Type.String()
+})
+
 const TradeSchema = new mongoose.Schema({
     title: { type: String, required: true },
     price: { type: Number, required: true },
@@ -63,11 +67,33 @@ const readSchema = {
     }
 }
 
+const readMyTradesSchema = {
+    params: paramsUserId,
+    response: {
+        200: Type.Object({
+            trade: Type.Array(
+                Type.Object({
+                    id: Type.String(),
+                    title: Type.String(),
+                    price: Type.Number(),
+                    description: Type.String(),
+                    photo: Type.Array(Type.String()),
+                    heart: Type.Number(),
+                    userName: Type.String(),
+                    createdAt: Type.String(),
+                })
+            )
+        })
+    }
+}
+
 export {
     TradeModel,
 
     paramsTradesId,
+    paramsUserId,
 
     readAllSchema,
     readSchema,
+    readMyTradesSchema
 }
