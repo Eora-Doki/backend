@@ -3,6 +3,7 @@ import { headers, registerBodySchema, loginBodySchema, resetPasswordBodySchema }
 import { searchQuerySchema } from '../store'
 import { updateBodySchema, paramsKakaoId, paramsKakaoIdReviewId, paramsUserId, queryUserId } from '../review'
 import { paramsTradesId } from '../trade'
+import { keywordBodySchema } from '../keyword'
 
 type THeaders = Static<typeof headers>
 type TUserRegisterBody = Static<typeof registerBodySchema>
@@ -15,6 +16,7 @@ type TUserIdParams = Static<typeof paramsUserId>
 type TUserIdQuery = Static<typeof queryUserId>
 type TReviewUpdateBody = Static<typeof updateBodySchema>
 type TTradeIdParams = Static<typeof paramsTradesId>
+type TUserKeywordBody = Static<typeof keywordBodySchema>
 
 export {
     THeaders,
@@ -28,4 +30,5 @@ export {
     TUserIdQuery,
     TReviewUpdateBody,
     TTradeIdParams,
+    TUserKeywordBody,
 }

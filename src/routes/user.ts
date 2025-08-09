@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { registerSchema, loginSchema, resetPasswordSchema, logoutSchema } from "../schema/user";
-import { TUserRegisterBody, TUserLoginBody, TUserResetPasswordBody, TUserIdParams } from "../schema/types";
+import { registerSchema, loginSchema, resetPasswordSchema, logoutSchema, userInfoSchema } from "../schema/user";
+import { TUserRegisterBody, TUserLoginBody, TUserResetPasswordBody, TUserIdParams, TUserKeywordBody } from "../schema/types";
 import fastifyCookie from '@fastify/cookie'
 import userService from "../services/user.ts"
 import { readMySchema } from "../schema/review.ts";
@@ -8,6 +8,7 @@ import reviewService from "../services/review";
 import { userPlugin } from "../plugin/user";
 import { readMyTradesSchema } from "../schema/trade.ts";
 import tradeService from "../services/trade.ts"
+import { keywordRegisterSchema } from "../schema/keyword.ts";
 
 const userRoute = async (fastify: FastifyInstance) => {
     fastify.route({
@@ -115,6 +116,24 @@ const userRoute = async (fastify: FastifyInstance) => {
     })
     fastify.route({
         method: 'GET',
+        url: '/:userId',
+        schema: userInfoSchema,
+        handler: async(req: FastifyRequest<{ Params: TUserIdParams }>, rep: FastifyReply) => {
+            const { userId } = req.params
+
+            try {
+                const userInfo = await userService.user_info({
+                    userId
+                })
+                rep.send(userInfo)
+            }
+            catch(err) {
+                throw err
+            }
+        }
+    })
+    fastify.route({
+        method: 'GET',
         url: '/:userId/reviews',
         schema: readMySchema,
         handler: async (req: FastifyRequest<{ Params: TUserIdParams }>, rep: FastifyReply) => {
@@ -139,6 +158,26 @@ const userRoute = async (fastify: FastifyInstance) => {
             try {
                 const readMy = await tradeService.readMy({ userId })
                 rep.send( readMy )
+            }
+            catch(err) {
+                throw err
+            }
+        }
+    })
+    fastify.route({
+        method: 'PATCH',
+        url: '/:userId/keyword',
+        schema: keywordRegisterSchema,
+        handler: async(req: FastifyRequest<{ Body: TUserKeywordBody, Params: TUserIdParams }>, rep: FastifyReply) => {
+            const { userId } = req.params
+            const { keyword } = req.body
+
+            try {
+                const keywordUpload = await userService.keyword_upload({
+                    userId,
+                    keyword
+                })
+                rep.send(keywordUpload)
             }
             catch(err) {
                 throw err
