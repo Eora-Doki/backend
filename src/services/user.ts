@@ -2,6 +2,7 @@ import { TokenModel, UserModel } from "../schema/user"
 import { verifyEmail, verifyName, passwordEcrypt, accessToken, refreshToken } from "../lib/user"
 import bcrypt from 'bcrypt'
 import mongoose from 'mongoose';
+import { userInfo } from "os";
 
 function userService() {
     const register = async ({
@@ -136,12 +137,66 @@ function userService() {
             throw err
         }
     }
+    const keyword_upload = async({
+        userId,
+        keyword
+    }: {
+        userId: string,
+        keyword: string[]
+    }) => {
+        
+        try {
+            const verifyUser = await UserModel.findById(userId)
+            if (!verifyUser) {
+                return { message: "해당 유저가 존재하지 않습니다." }
+            }
+
+            const keywordRegister = await UserModel.updateOne(
+                { _id: userId },
+                {
+                    $set: {
+                        keyword: keyword
+                    }
+                }
+            )
+
+            const returnValue = await UserModel.findById(userId)
+                .select({ keyword: 1 })
+
+            return {
+                userId,
+                keyword: returnValue!.keyword
+            }
+        }
+        catch(err) {
+            throw err
+        }
+    }
+    const user_info = async({
+        userId
+    }: {
+        userId: string
+    }) => {
+        try {
+            const userInfo = await UserModel.findById( userId )
+            if (!userInfo) {
+                return { message: "해당 유저가 존재하지 않습니다." }
+            }
+
+            return userInfo
+        }
+        catch(err) {
+            throw err
+        }
+    }
 
     return {
         register,
         login,
         logout,
         resetPassword,
+        keyword_upload,
+        user_info,
     }
 }
 export default userService()

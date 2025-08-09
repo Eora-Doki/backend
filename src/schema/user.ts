@@ -1,5 +1,6 @@
 import { Type } from '@sinclair/typebox'
 import mongoose, { Types } from 'mongoose';
+import { paramsUserId } from './review';
 
 const UserSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
@@ -7,12 +8,20 @@ const UserSchema = new mongoose.Schema({
     password: { type: String, required: true },
     character: { type: String, required: true }, 
     keyword: [{ type: String }],
-
-    token: {type: Types.ObjectId, ref: 'Token'},
-    avatar: { type: Types.ObjectId, ref: 'Avatar' },
-    reviews: [{ type: Types.ObjectId, ref: 'Review' }],
-    trades: [{ type: Types.ObjectId, ref: 'Trade' }],
-});
+    avatar: { type: String, required: true },
+    // token: {type: Types.ObjectId, ref: 'Token'},
+    // reviews: [{ type: Types.ObjectId, ref: 'Review' }],
+    // trades: [{ type: Types.ObjectId, ref: 'Trade' }],
+}, {
+    toJSON: {
+        virtuals: true,
+        versionKey: false,      
+        transform(doc: any, ret: any) {
+            ret.id = ret._id
+            delete ret._id
+        }
+    }
+})
 
 const TokenSchema = new mongoose.Schema({
   userId: { type: mongoose.Types.ObjectId, ref: 'User', required: true },
@@ -87,6 +96,19 @@ const resetPasswordSchema = {
     }
 }
 
+const userInfoSchema = {
+    params: paramsUserId,
+    response: {
+        200: Type.Object({
+            id: Type.String(),
+            email: Type.String(),
+            name: Type.String(),
+            character: Type.String(),
+            keyword: Type.Array(Type.String())
+        })
+    }
+}
+
 export {
     UserModel,
     TokenModel,
@@ -100,4 +122,5 @@ export {
     loginSchema,
     resetPasswordSchema,
     logoutSchema,
+    userInfoSchema,
 }
