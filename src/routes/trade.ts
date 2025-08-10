@@ -2,7 +2,7 @@ import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { uploadToS3 } from "../utils/s3Upload";
 import tradeService from "../services/trade"
 import { deleteSchema, readAllSchema, readSchema } from "../schema/trade";
-import { TTradeIdParams, TUserIdQuery } from "../schema/types";
+import { TTradeIdParams, TUserIdParams, TUserIdQuery } from "../schema/types";
 
 const tradeRoute = async (fastify: FastifyInstance) => {
     fastify.route({

@@ -162,7 +162,6 @@ function tradeService() {
             throw err
         }
     }
-
     return {
         register,
         readAll,
